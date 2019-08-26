@@ -5,6 +5,8 @@ class App extends React.Component {
   constructor(){
     super();
     this.state = {
+     pattern : [],
+     history : [],
         box1 : false,
         box2 : false,
         box3 : false,
@@ -12,12 +14,27 @@ class App extends React.Component {
     }
   }
 
-    // the id can be received using event below, OR through the code:
-    // handleClick = (id, event) =>
+
   handleClick = (id, event) => {
-    let currentBox = "box" + id;
-    let currentState = this.state[currentBox];
-    this.setState({[currentBox] : !currentState});
+      let ch = this.state.history;
+      ch.push(id);
+      setTimeout( () => {
+        this.setState({["box" + id] : !(this.state["box" + id]) });
+      }, 300*id );
+      this.setState({ ["box" + id] : !(this.state["box" + id]) });
+  }
+
+    // the id can be received using event below, OR through the code:
+    // handleClick = (id, event) => or
+    // handleClick(event)   event.target.dataset.id == id
+  handleStart = (id, event) => {
+   // let currentBox = "box" + id;
+   // let currentState = this.state[currentBox];
+   // this.setState({[currentBox] : !currentState});
+    let cp = this.state.pattern;
+    cp.push(Math.floor(Math.random() * 4) + 1);
+    console.log(cp);
+    this.playPattern();
   }
     
   render() {
@@ -27,7 +44,7 @@ class App extends React.Component {
                        flex           : "1 auto",
                        margin         : 0,
                        padding        : 0};
-    // 
+    let startStyle = { background : "center" };
     return (
       <div>
         <h1>Simon</h1>
@@ -39,8 +56,20 @@ class App extends React.Component {
           <Box active={this.state.box3} handleClick={this.handleClick} id={3} color={{num1:255, num2:255, num3:0}}/>
           <Box active={this.state.box4} handleClick={this.handleClick} id={4} color={{num1:0, num2:0, num3:255}}/>
         </div>
+        <button onClick={this.handleStart} style={startStyle}>Start</button>
       </div>
       );
+  }
+
+  playPattern () {
+    let cp = this.state.pattern;
+    console.log("This is cp: " + cp);
+    for(let i=0; i<cp.length; i++){
+          setTimeout( () => {
+            this.setState({["box" + cp[i]] : !(this.state["box" + cp[i]]) });
+          }, 300*(i+1) );
+        this.setState({["box" + cp[i]] : !(this.state["box" + cp[i]]) });
+    }
   }
 }
 
